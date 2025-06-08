@@ -9,9 +9,25 @@ MFRC522 mfrc522(SS_PIN, RST_PIN); // Class Library for RFID
 //Note: Blue tags have format of 82 0E 82 D4, White tags have format of 04 D1 34 C8 23 02 89
 
 // Pin for LEDs & Buttons
-// int ResetBtn = 7;
-// int LED1 = 9;
-// int LED2 = 8;
+int ResetBtn = 7;
+
+int LED_sodium_1 = 0;
+int LED_sodium_2 = 0;
+int LED_sodium_3 = 0;
+int LED_sodium_4 = 0;
+int LED_sodium_5 = 0;
+
+int LED_sugar_1 = 0;
+int LED_sugar_2 = 0;
+int LED_sugar_3 = 0;
+int LED_sugar_4 = 0;
+int LED_sugar_5 = 0;
+
+int LED_fiber_1 = 0;
+int LED_fiber_2 = 0;
+int LED_fiber_3 = 0;
+int LED_fiber_4 = 0;
+int LED_fiber_5 = 0;
 
 // Flags for loop manipulation
 // int start_flag = 0;
@@ -23,10 +39,65 @@ MFRC522 mfrc522(SS_PIN, RST_PIN); // Class Library for RFID
 // int counter = 0;
 // int cache_counter = 0;
 
-// Nutrient variables
-int sodium = 0;
-int fiber = 0;
-int sugar = 0;
+// Nutrient variables (In mg)
+int sodium = 0; // in mg // How much nutrients user is actually consuming
+int fiber = 0; // in g
+int sugar = 0; // in g
+
+int rec_sodium = 2300; // in mg // How much nutrients user is needs everyday
+int rec_fiber = 30; //in g
+int rec_sugar = 30; // in g
+
+// Food Nutrient variables 
+int cheese_sodium = 211;
+int cheese_sugar = 1;
+int cheese_fiber = 0;
+
+int ice_cream_sodium = 0;
+int ice_cream_sugar = 0;
+int ice_cream_fiber = 0;
+
+int broccoli_sodium = 0;
+int broccoli_sugar = 0;
+int broccoli_fiber = 0;
+
+int salad_sodium = 0;
+int salad_sugar = 0;
+int salad_fiber = 0;
+
+int croissant_sodium = 0;
+int croissant_sugar = 0;
+int croissant_fiber = 0;
+
+int apple_sodium = 0;
+int apple_sugar = 0;
+int apple_fiber = 0;
+
+int chicken_sodium = 0;
+int chicken_sugar = 0;
+int chicken_fiber = 0;
+
+int burger_sodium = 0;
+int burger_sugar = 0;
+int burger_fiber = 0;
+
+int pizza_sodium = 0;
+int pizza_sugar = 0;
+int pizza_fiber = 0;
+
+int ramen_sodium = 0;
+int ramen_sugar = 0;
+int ramen_fiber = 0;
+
+int spaghetti_sodium = 0;
+int spaghetti_sugar = 0;
+int spaghetti_fiber = 0;
+
+int bread_sodium = 0;
+int bread_sugar = 0;
+int bread_fiber = 0;
+
+
 
 // Async Timer variables
 unsigned long startMillis;
@@ -71,8 +142,123 @@ void loop() {
   Serial.println();
 
   if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Change this to what the actual UID of the tag is, and duplicate if necessary 
+  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Cheese 
     // Update nutrient values
+
+    sodium = sodium + cheese_sodium;
+    sugar = sugar + cheese_sugar;
+    fiber = fiber + cheese_fiber;
+
+  } 
+
+  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
+  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Ice Cream
+    // Update nutrient values
+
+    sodium = sodium + ice_cream_sodium;
+    sugar = sugar + ice_cream_sugar;
+    fiber = fiber + ice_cream_fiber;
+
+  } 
+
+  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
+  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Broccoli
+    // Update nutrient values
+
+    sodium = sodium + broccoli_sodium;
+    sugar = sugar + broccoli_sugar;
+    fiber = fiber + broccoli_fiber;
+
+  } 
+
+  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
+  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Salad
+    // Update nutrient values
+
+    sodium = sodium + salad_sodium;
+    sugar = sugar + salad_sugar;
+    fiber = fiber + salad_fiber;
+
+  } 
+
+  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
+  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Croissant
+    // Update nutrient values
+
+    sodium = sodium + croissant_sodium;
+    sugar = sugar + croissant_sugar;
+    fiber = fiber + croissant_fiber;
+
+  } 
+
+  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
+  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Apple
+    // Update nutrient values
+
+    sodium = sodium + apple_sodium;
+    sugar = sugar + apple_sugar;
+    fiber = fiber + apple_fiber;
+
+  } 
+
+  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
+  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Chicken
+    // Update nutrient values
+
+    sodium = sodium + chicken_sodium;
+    sugar = sugar + chicken_sugar;
+    fiber = fiber + chicken_fiber;
+
+  } 
+
+  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
+  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Burger
+    // Update nutrient values
+
+    sodium = sodium + burger_sodium;
+    sugar = sugar + burger_sugar;
+    fiber = fiber + burger_fiber;
+
+  } 
+
+  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
+  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Pizza
+    // Update nutrient values
+
+    sodium = sodium + pizza_sodium;
+    sugar = sugar + pizza_sugar;
+    fiber = fiber + pizza_fiber;
+
+  } 
+
+  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
+  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Ramen
+    // Update nutrient values
+
+    sodium = sodium + ramen_sodium;
+    sugar = sugar + ramen_sugar;
+    fiber = fiber + ramen_fiber;
+
+  } 
+
+  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
+  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Spagetti
+    // Update nutrient values
+
+    sodium = sodium + spagetti_sodium;
+    sugar = sugar + spagetti_sugar;
+    fiber = fiber + spagetti_fiber;
+
+  } 
+
+  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
+  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Bread
+    // Update nutrient values
+
+    sodium = sodium + bread_sodium;
+    sugar = sugar + bread_sugar;
+    fiber = fiber + bread_fiber;
+
   } 
 
 
