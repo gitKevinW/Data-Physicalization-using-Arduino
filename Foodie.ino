@@ -9,7 +9,7 @@ MFRC522 mfrc522(SS_PIN, RST_PIN); // Class Library for RFID
 //Note: Blue tags have format of 82 0E 82 D4, White tags have format of 04 D1 34 C8 23 02 89
 
 // Pin for LEDs & Buttons
-int ResetBtn = 7;
+int ResetBtn = 0;
 
 int LED_sodium_1 = 0;
 int LED_sodium_2 = 0;
@@ -39,63 +39,67 @@ int LED_fiber_5 = 0;
 // int counter = 0;
 // int cache_counter = 0;
 
-// Nutrient variables (In mg)
-int sodium = 0; // in mg // How much nutrients user is actually consuming
-int fiber = 0; // in g
-int sugar = 0; // in g
+// Nutrient variables (Sodium: mg, Fiber: g, Sugar: g)
+int sodium = 0; // How much nutrients user is actually consuming
+int fiber = 0; 
+int sugar = 0; 
 
-int rec_sodium = 2300; // in mg // How much nutrients user is needs everyday
-int rec_fiber = 30; //in g
-int rec_sugar = 30; // in g
+int rec_sodium = 1500; // How much nutrients user needs everyday
+int rec_fiber = 30; 
+int rec_sugar = 20; 
 
-// Food Nutrient variables 
-int cheese_sodium = 211;
-int cheese_sugar = 1;
+int lim_sodium = 2300; // in mg // How much nutrients is the limit for everyday
+int lim_fiber = 50; 
+int lim_sugar = 45; 
+
+// Food Nutrient variables (Sources: USDA, FDA)
+int cheese_sodium = 180;
+int cheese_sugar = 0;
 int cheese_fiber = 0;
 
-int ice_cream_sodium = 0;
-int ice_cream_sugar = 0;
+int ice_cream_sodium = 80;
+int ice_cream_sugar = 28;
 int ice_cream_fiber = 0;
 
-int broccoli_sodium = 0;
-int broccoli_sugar = 0;
-int broccoli_fiber = 0;
+int broccoli_sodium = 55;
+int broccoli_sugar = 2;
+int broccoli_fiber = 5;
 
-int salad_sodium = 0;
-int salad_sugar = 0;
-int salad_fiber = 0;
+int salad_sodium = 200;
+int salad_sugar = 3;
+int salad_fiber = 3;
 
-int croissant_sodium = 0;
-int croissant_sugar = 0;
-int croissant_fiber = 0;
+int croissant_sodium = 210;
+int croissant_sugar = 6;
+int croissant_fiber = 1;
 
-int apple_sodium = 0;
-int apple_sugar = 0;
-int apple_fiber = 0;
+int apple_sodium = 1;
+int apple_sugar = 19;
+int apple_fiber = 4;
 
-int chicken_sodium = 0;
+int chicken_sodium = 60;
 int chicken_sugar = 0;
 int chicken_fiber = 0;
 
-int burger_sodium = 0;
-int burger_sugar = 0;
-int burger_fiber = 0;
+int burger_sodium = 800;
+int burger_sugar = 7;
+int burger_fiber = 2;
 
-int pizza_sodium = 0;
-int pizza_sugar = 0;
-int pizza_fiber = 0;
+int pizza_sodium = 640;
+int pizza_sugar = 3;
+int pizza_fiber = 2;
 
-int ramen_sodium = 0;
-int ramen_sugar = 0;
-int ramen_fiber = 0;
+int ramen_sodium = 1700;
+int ramen_sugar = 1;
+int ramen_fiber = 1;
 
-int spaghetti_sodium = 0;
-int spaghetti_sugar = 0;
-int spaghetti_fiber = 0;
+int spaghetti_sodium = 500;
+int spaghetti_sugar = 6;
+int spaghetti_fiber = 3;
 
-int bread_sodium = 0;
-int bread_sugar = 0;
-int bread_fiber = 0;
+int bread_sodium = 150;
+int bread_sugar = 2;
+int bread_fiber = 1;
 
 
 
@@ -107,6 +111,25 @@ const unsigned long second = 200; //In milliseconds
 void setup() {
   Serial.begin(9600);
   SPI.begin();
+
+  pinMode(LED_sodium_1, OUTPUT); // For LED
+  pinMode(LED_sodium_2, OUTPUT); // For LED
+  pinMode(LED_sodium_3, OUTPUT); // For LED
+  pinMode(LED_sodium_4, OUTPUT); // For LED
+  pinMode(LED_sodium_5, OUTPUT); // For LED
+
+  pinMode(LED_sugar_1, OUTPUT); // For LED
+  pinMode(LED_sugar_2, OUTPUT); // For LED
+  pinMode(LED_sugar_3, OUTPUT); // For LED
+  pinMode(LED_sugar_4, OUTPUT); // For LED
+  pinMode(LED_sugar_5, OUTPUT); // For LED
+
+  pinMode(LED_fiber_1, OUTPUT); // For LED
+  pinMode(LED_fiber_2, OUTPUT); // For LED
+  pinMode(LED_fiber_3, OUTPUT); // For LED
+  pinMode(LED_fiber_4, OUTPUT); // For LED
+  pinMode(LED_fiber_5, OUTPUT); // For LED
+
 
   Serial.println("Initializing RFID reader..."); // Debug for RFID
   mfrc522.PCD_Init();
@@ -125,6 +148,7 @@ void setup() {
 void loop() {
 
   //TODO: Implement LED status --> Make sure to keep it above mfrc522.PICC_IsNewCardPresent() & mfrc522.PICC_ReadCardSerial() statements
+  //digitalWrite(6, LOW);
 
   if (!mfrc522.PICC_IsNewCardPresent()) {
     return;
