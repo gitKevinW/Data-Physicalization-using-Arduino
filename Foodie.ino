@@ -4,12 +4,24 @@
 #define RST_PIN 9
 #define SS_PIN 10
 
+// With words facing the readable way, from right to left: 
+// Empty, 5v, CLOCK_PIN, LATCH_PIN, ground, DATA_PIN, 1st LED power, 5v
+#define DATA_PIN1 7 //ds pin
+#define CLOCK_PIN1 6 //shcp pin
+#define LATCH_PIN1 5 //stcp pin
+
+#define DATA_PIN2 4 //ds pin
+#define CLOCK_PIN2 3 //shcp pin
+#define LATCH_PIN2 2 //stcp pin
+
 MFRC522 mfrc522(SS_PIN, RST_PIN); // Class Library for RFID
+
+// MOSI pin 11, MISO pin 12, SCK pin 13, GND pin GND, RST pin 9, SDA pin 10, 3.3V pin 3.3V
 
 //Note: Blue tags have format of 82 0E 82 D4, White tags have format of 04 D1 34 C8 23 02 89
 
 // Pin for LEDs & Buttons
-int ResetBtn = 0;
+int ResetBtn = 8;
 
 int LED_sodium_1 = 0;
 int LED_sodium_2 = 0;
@@ -77,9 +89,9 @@ int apple_sodium = 1;
 int apple_sugar = 19;
 int apple_fiber = 4;
 
-int chicken_sodium = 60;
+int chicken_sodium = 1500;
 int chicken_sugar = 0;
-int chicken_fiber = 0;
+int chicken_fiber = 1;
 
 int burger_sodium = 800;
 int burger_sugar = 7;
@@ -130,6 +142,14 @@ void setup() {
   pinMode(LED_fiber_4, OUTPUT); // For LED
   pinMode(LED_fiber_5, OUTPUT); // For LED
 
+  pinMode(DATA_PIN1, OUTPUT);
+  pinMode(CLOCK_PIN1, OUTPUT);
+  pinMode(LATCH_PIN1, OUTPUT);
+
+  pinMode(DATA_PIN2, OUTPUT);
+  pinMode(CLOCK_PIN2, OUTPUT);
+  pinMode(LATCH_PIN2, OUTPUT);
+
 
   Serial.println("Initializing RFID reader..."); // Debug for RFID
   mfrc522.PCD_Init();
@@ -146,6 +166,100 @@ void setup() {
 }
 
 void loop() {
+
+  // Turn on all LEDs
+  digitalWrite(LATCH_PIN1, LOW);
+  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00000011); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN1, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN1, LOW);
+  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00000010); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN1, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN1, LOW);
+  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00000100); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN1, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN1, LOW);
+  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00001000); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN1, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN1, LOW);
+  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00010000); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN1, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN1, LOW);
+  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00100000); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN1, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN1, LOW);
+  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B01000000); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN1, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN1, LOW);
+  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B10000000); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN1, HIGH);
+  delay(500);
+
+  // Turn off all LEDs
+  digitalWrite(LATCH_PIN1, LOW);
+  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00000000); // 0x00 = 00000000 (8 bits off)
+  digitalWrite(LATCH_PIN1, HIGH);
+  delay(0);
+
+  // Turn on all LEDs
+  digitalWrite(LATCH_PIN2, LOW);
+  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B0000001); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN2, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN2, LOW);
+  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B0000010); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN2, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN2, LOW);
+  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B00000100); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN2, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN2, LOW);
+  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B00001000); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN2, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN2, LOW);
+  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B00010000); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN2, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN2, LOW);
+  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B00100000); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN2, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN2, LOW);
+  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B01000000); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN2, HIGH);
+  delay(500);
+
+  digitalWrite(LATCH_PIN2, LOW);
+  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B10000000); // 0xFF = 11111111 (8 bits on)
+  digitalWrite(LATCH_PIN2, HIGH);
+  delay(500);
+
+  // Turn off all LEDs
+  digitalWrite(LATCH_PIN2, LOW);
+  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B00000000); // 0x00 = 00000000 (8 bits off)
+  digitalWrite(LATCH_PIN2, HIGH);
+  delay(0);
 
   //TODO: Implement LED status --> Make sure to keep it above mfrc522.PICC_IsNewCardPresent() & mfrc522.PICC_ReadCardSerial() statements
   //digitalWrite(6, LOW);
@@ -165,125 +279,102 @@ void loop() {
   }
   Serial.println();
 
-  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Cheese 
-    // Update nutrient values
+  if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0xD1 && mfrc522.uid.uidByte[2] == 0x34 && mfrc522.uid.uidByte[3] == 0xC8 && mfrc522.uid.uidByte[4] == 0x23
+    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Cheese
+  Serial.println("SCANNED CHEESE");
+  sodium += cheese_sodium;
+  sugar += cheese_sugar;
+  fiber += cheese_fiber;
+}
 
-    sodium = sodium + cheese_sodium;
-    sugar = sugar + cheese_sugar;
-    fiber = fiber + cheese_fiber;
+if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x31 && mfrc522.uid.uidByte[2] == 0xCB && mfrc522.uid.uidByte[3] == 0xC9 && mfrc522.uid.uidByte[4] == 0x23
+    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Ice Cream
+  Serial.println("SCANNED ICE CREAM");
+  sodium += ice_cream_sodium;
+  sugar += ice_cream_sugar;
+  fiber += ice_cream_fiber;
+}
 
-  } 
+if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x03 && mfrc522.uid.uidByte[2] == 0x1C && mfrc522.uid.uidByte[3] == 0xF0 && mfrc522.uid.uidByte[4] == 0x20
+    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Broccoli
+  Serial.println("SCANNED BROCCOLI");
+  sodium += broccoli_sodium;
+  sugar += broccoli_sugar;
+  fiber += broccoli_fiber;
+}
 
-  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Ice Cream
-    // Update nutrient values
+if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0xA3 && mfrc522.uid.uidByte[2] == 0xFA && mfrc522.uid.uidByte[3] == 0xDF && mfrc522.uid.uidByte[4] == 0x20
+    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Salad
+  Serial.println("SCANNED SALAD");
+  sodium += salad_sodium;
+  sugar += salad_sugar;
+  fiber += salad_fiber;
+}
 
-    sodium = sodium + ice_cream_sodium;
-    sugar = sugar + ice_cream_sugar;
-    fiber = fiber + ice_cream_fiber;
+if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x91 && mfrc522.uid.uidByte[2] == 0x24 && mfrc522.uid.uidByte[3] == 0xC7 && mfrc522.uid.uidByte[4] == 0x23
+    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Croissant
+  Serial.println("SCANNED CROISSANT");
+  sodium += croissant_sodium;
+  sugar += croissant_sugar;
+  fiber += croissant_fiber;
+}
 
-  } 
+if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x81 && mfrc522.uid.uidByte[2] == 0x21 && mfrc522.uid.uidByte[3] == 0xC6 && mfrc522.uid.uidByte[4] == 0x23
+    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Apple
+  Serial.println("SCANNED APPLE");
+  sodium += apple_sodium;
+  sugar += apple_sugar;
+  fiber += apple_fiber;
+}
 
-  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Broccoli
-    // Update nutrient values
+if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0xF3 && mfrc522.uid.uidByte[2] == 0x69 && mfrc522.uid.uidByte[3] == 0xE1 && mfrc522.uid.uidByte[4] == 0x20
+    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Chicken
+  Serial.println("SCANNED CHICKEN");
+  sodium += chicken_sodium;
+  sugar += chicken_sugar;
+  fiber += chicken_fiber;
+}
 
-    sodium = sodium + broccoli_sodium;
-    sugar = sugar + broccoli_sugar;
-    fiber = fiber + broccoli_fiber;
+if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x41 && mfrc522.uid.uidByte[2] == 0x32 && mfrc522.uid.uidByte[3] == 0xC4 && mfrc522.uid.uidByte[4] == 0x23
+    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Burger
+  Serial.println("SCANNED BURGER");
+  sodium += burger_sodium;
+  sugar += burger_sugar;
+  fiber += burger_fiber;
+}
 
-  } 
+if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x51 && mfrc522.uid.uidByte[2] == 0xD0 && mfrc522.uid.uidByte[3] == 0x7C && mfrc522.uid.uidByte[4] == 0x23
+    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Pizza
+  Serial.println("SCANNED PIZZA");
+  sodium += pizza_sodium;
+  sugar += pizza_sugar;
+  fiber += pizza_fiber;
+}
 
-  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Salad
-    // Update nutrient values
+if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x63 && mfrc522.uid.uidByte[2] == 0xE5 && mfrc522.uid.uidByte[3] == 0xE1 && mfrc522.uid.uidByte[4] == 0x20
+    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Ramen
+  Serial.println("SCANNED RAMEN");
+  sodium += ramen_sodium;
+  sugar += ramen_sugar;
+  fiber += ramen_fiber;
+}
 
-    sodium = sodium + salad_sodium;
-    sugar = sugar + salad_sugar;
-    fiber = fiber + salad_fiber;
+if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x51 && mfrc522.uid.uidByte[2] == 0x48 && mfrc522.uid.uidByte[3] == 0x86 && mfrc522.uid.uidByte[4] == 0x23
+    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Spaghetti
+  Serial.println("SCANNED SPAGHETTI");
+  sodium += spaghetti_sodium;
+  sugar += spaghetti_sugar;
+  fiber += spaghetti_fiber;
+}
 
-  } 
+if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x51 && mfrc522.uid.uidByte[2] == 0x43 && mfrc522.uid.uidByte[3] == 0x81 && mfrc522.uid.uidByte[4] == 0x23
+    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Bread
+  Serial.println("SCANNED BREAD");
+  sodium += bread_sodium;
+  sugar += bread_sugar;
+  fiber += bread_fiber;
+}
 
-  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Croissant
-    // Update nutrient values
-
-    sodium = sodium + croissant_sodium;
-    sugar = sugar + croissant_sugar;
-    fiber = fiber + croissant_fiber;
-
-  } 
-
-  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Apple
-    // Update nutrient values
-
-    sodium = sodium + apple_sodium;
-    sugar = sugar + apple_sugar;
-    fiber = fiber + apple_fiber;
-
-  } 
-
-  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Chicken
-    // Update nutrient values
-
-    sodium = sodium + chicken_sodium;
-    sugar = sugar + chicken_sugar;
-    fiber = fiber + chicken_fiber;
-
-  } 
-
-  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Burger
-    // Update nutrient values
-
-    sodium = sodium + burger_sodium;
-    sugar = sugar + burger_sugar;
-    fiber = fiber + burger_fiber;
-
-  } 
-
-  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Pizza
-    // Update nutrient values
-
-    sodium = sodium + pizza_sodium;
-    sugar = sugar + pizza_sugar;
-    fiber = fiber + pizza_fiber;
-
-  } 
-
-  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Ramen
-    // Update nutrient values
-
-    sodium = sodium + ramen_sodium;
-    sugar = sugar + ramen_sugar;
-    fiber = fiber + ramen_fiber;
-
-  } 
-
-  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Spagetti
-    // Update nutrient values
-
-    sodium = sodium + spagetti_sodium;
-    sugar = sugar + spagetti_sugar;
-    fiber = fiber + spagetti_fiber;
-
-  } 
-
-  if (mfrc522.uid.uidByte[0] == 0xDE && mfrc522.uid.uidByte[1] == 0xAD && mfrc522.uid.uidByte[2] == 0xBE && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF 
-  && mfrc522.uid.uidByte[3] == 0xEF && mfrc522.uid.uidByte[3] == 0xEF) { // Bread
-    // Update nutrient values
-
-    sodium = sodium + bread_sodium;
-    sugar = sugar + bread_sugar;
-    fiber = fiber + bread_fiber;
-
-  } 
 
 
 
