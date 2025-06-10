@@ -23,46 +23,30 @@ MFRC522 mfrc522(SS_PIN, RST_PIN); // Class Library for RFID
 // Pin for LEDs & Buttons
 int ResetBtn = 8;
 
-int LED_sodium_1 = 0;
-int LED_sodium_2 = 0;
-int LED_sodium_3 = 0;
-int LED_sodium_4 = 0;
-int LED_sodium_5 = 0;
-
-int LED_sugar_1 = 0;
-int LED_sugar_2 = 0;
-int LED_sugar_3 = 0;
-int LED_sugar_4 = 0;
-int LED_sugar_5 = 0;
-
-int LED_fiber_1 = 0;
-int LED_fiber_2 = 0;
-int LED_fiber_3 = 0;
-int LED_fiber_4 = 0;
-int LED_fiber_5 = 0;
-
-// Flags for loop manipulation
-// int start_flag = 0;
-// int rest_flag = 0;
-// int lock_flag = 0;
-// int buzzer_flag = 0;
-
-// Timer variables
-// int counter = 0;
-// int cache_counter = 0;
-
 // Nutrient variables (Sodium: mg, Fiber: g, Sugar: g)
 int sodium = 0; // How much nutrients user is actually consuming
 int fiber = 0; 
 int sugar = 0; 
 
-int rec_sodium = 1500; // How much nutrients user needs everyday
+int sl_sodium = 5; 
+int sl_fiber = 5; 
+int sl_sugar = 5; 
+
+int l_sodium = 1000; 
+int l_fiber = 15; 
+int l_sugar = 10; 
+
+int rec_sodium = 1500;
 int rec_fiber = 30; 
 int rec_sugar = 20; 
 
-int lim_sodium = 2300; // in mg // How much nutrients is the limit for everyday
-int lim_fiber = 50; 
-int lim_sugar = 45; 
+int h_sodium = 1900; 
+int h_fiber = 50; 
+int h_sugar = 35; 
+
+int sh_sodium = 2300; // in mg // How much nutrients is the limit for everyday
+int sh_fiber = 70; 
+int sh_sugar = 50; 
 
 // Food Nutrient variables (Sources: USDA, FDA)
 int cheese_sodium = 180;
@@ -113,34 +97,18 @@ int bread_sodium = 150;
 int bread_sugar = 2;
 int bread_fiber = 1;
 
-
-
 // Async Timer variables
 unsigned long startMillis;
 unsigned long currentMillis;
 const unsigned long second = 200; //In milliseconds
 
+// Global variables to track LED states
+byte currentLED1 = 0;  // For sugar and sodium (first shift register)
+byte currentLED2 = 0;  // For fiber (second shift register)
+
 void setup() {
   Serial.begin(9600);
   SPI.begin();
-
-  pinMode(LED_sodium_1, OUTPUT); // For LED
-  pinMode(LED_sodium_2, OUTPUT); // For LED
-  pinMode(LED_sodium_3, OUTPUT); // For LED
-  pinMode(LED_sodium_4, OUTPUT); // For LED
-  pinMode(LED_sodium_5, OUTPUT); // For LED
-
-  pinMode(LED_sugar_1, OUTPUT); // For LED
-  pinMode(LED_sugar_2, OUTPUT); // For LED
-  pinMode(LED_sugar_3, OUTPUT); // For LED
-  pinMode(LED_sugar_4, OUTPUT); // For LED
-  pinMode(LED_sugar_5, OUTPUT); // For LED
-
-  pinMode(LED_fiber_1, OUTPUT); // For LED
-  pinMode(LED_fiber_2, OUTPUT); // For LED
-  pinMode(LED_fiber_3, OUTPUT); // For LED
-  pinMode(LED_fiber_4, OUTPUT); // For LED
-  pinMode(LED_fiber_5, OUTPUT); // For LED
 
   pinMode(DATA_PIN1, OUTPUT);
   pinMode(CLOCK_PIN1, OUTPUT);
@@ -150,6 +118,7 @@ void setup() {
   pinMode(CLOCK_PIN2, OUTPUT);
   pinMode(LATCH_PIN2, OUTPUT);
 
+  pinMode(ResetBtn, INPUT_PULLUP);
 
   Serial.println("Initializing RFID reader..."); // Debug for RFID
   mfrc522.PCD_Init();
@@ -163,108 +132,29 @@ void setup() {
     Serial.println("RFID module is working!");
   }
 
+  currentLED1 = 0;
+  currentLED2 = 0;
+  updateLEDs();  // Initialize all LEDs off
+
+
 }
 
 void loop() {
+  
+  updateLEDs();  // Continuously update LEDs
 
-  // Turn on all LEDs
-  digitalWrite(LATCH_PIN1, LOW);
-  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00000011); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN1, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN1, LOW);
-  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00000010); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN1, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN1, LOW);
-  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00000100); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN1, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN1, LOW);
-  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00001000); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN1, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN1, LOW);
-  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00010000); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN1, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN1, LOW);
-  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00100000); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN1, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN1, LOW);
-  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B01000000); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN1, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN1, LOW);
-  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B10000000); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN1, HIGH);
-  delay(500);
-
-  // Turn off all LEDs
-  digitalWrite(LATCH_PIN1, LOW);
-  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, 0B00000000); // 0x00 = 00000000 (8 bits off)
-  digitalWrite(LATCH_PIN1, HIGH);
-  delay(0);
-
-  // Turn on all LEDs
-  digitalWrite(LATCH_PIN2, LOW);
-  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B0000001); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN2, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN2, LOW);
-  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B0000010); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN2, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN2, LOW);
-  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B00000100); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN2, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN2, LOW);
-  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B00001000); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN2, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN2, LOW);
-  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B00010000); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN2, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN2, LOW);
-  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B00100000); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN2, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN2, LOW);
-  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B01000000); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN2, HIGH);
-  delay(500);
-
-  digitalWrite(LATCH_PIN2, LOW);
-  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B10000000); // 0xFF = 11111111 (8 bits on)
-  digitalWrite(LATCH_PIN2, HIGH);
-  delay(500);
-
-  // Turn off all LEDs
-  digitalWrite(LATCH_PIN2, LOW);
-  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B00000000); // 0x00 = 00000000 (8 bits off)
-  digitalWrite(LATCH_PIN2, HIGH);
-  delay(0);
-
-  //TODO: Implement LED status --> Make sure to keep it above mfrc522.PICC_IsNewCardPresent() & mfrc522.PICC_ReadCardSerial() statements
-  //digitalWrite(6, LOW);
+  if (digitalRead(ResetBtn) == LOW) {  // Button pressed
+    sodium = 0;
+    sugar = 0;
+    fiber = 0;
+    currentLED1 = 0;
+    currentLED2 = 0;
+    updateLEDs();
+    delay(500); // debounce
+  }
 
   if (!mfrc522.PICC_IsNewCardPresent()) {
+    delay(50); 
     return;
   }
 
@@ -281,103 +171,164 @@ void loop() {
 
   if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0xD1 && mfrc522.uid.uidByte[2] == 0x34 && mfrc522.uid.uidByte[3] == 0xC8 && mfrc522.uid.uidByte[4] == 0x23
     && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Cheese
-  Serial.println("SCANNED CHEESE");
-  sodium += cheese_sodium;
-  sugar += cheese_sugar;
-  fiber += cheese_fiber;
-}
+    Serial.println("SCANNED CHEESE");
+    sodium += cheese_sodium;
+    sugar += cheese_sugar;
+    fiber += cheese_fiber;
+  }
 
-if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x31 && mfrc522.uid.uidByte[2] == 0xCB && mfrc522.uid.uidByte[3] == 0xC9 && mfrc522.uid.uidByte[4] == 0x23
-    && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Ice Cream
-  Serial.println("SCANNED ICE CREAM");
-  sodium += ice_cream_sodium;
-  sugar += ice_cream_sugar;
-  fiber += ice_cream_fiber;
-}
+  else if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x31 && mfrc522.uid.uidByte[2] == 0xCB && mfrc522.uid.uidByte[3] == 0xC9 && mfrc522.uid.uidByte[4] == 0x23
+      && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Ice Cream
+      Serial.println("SCANNED ICE CREAM");
+      sodium += ice_cream_sodium;
+      sugar += ice_cream_sugar;
+      fiber += ice_cream_fiber;
+  }
 
-if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x03 && mfrc522.uid.uidByte[2] == 0x1C && mfrc522.uid.uidByte[3] == 0xF0 && mfrc522.uid.uidByte[4] == 0x20
+  else if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x03 && mfrc522.uid.uidByte[2] == 0x1C && mfrc522.uid.uidByte[3] == 0xF0 && mfrc522.uid.uidByte[4] == 0x20
     && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Broccoli
-  Serial.println("SCANNED BROCCOLI");
-  sodium += broccoli_sodium;
-  sugar += broccoli_sugar;
-  fiber += broccoli_fiber;
-}
+    Serial.println("SCANNED BROCCOLI");
+    sodium += broccoli_sodium;
+    sugar += broccoli_sugar;
+    fiber += broccoli_fiber;
+  }
 
-if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0xA3 && mfrc522.uid.uidByte[2] == 0xFA && mfrc522.uid.uidByte[3] == 0xDF && mfrc522.uid.uidByte[4] == 0x20
+  else if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0xA3 && mfrc522.uid.uidByte[2] == 0xFA && mfrc522.uid.uidByte[3] == 0xDF && mfrc522.uid.uidByte[4] == 0x20
     && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Salad
-  Serial.println("SCANNED SALAD");
-  sodium += salad_sodium;
-  sugar += salad_sugar;
-  fiber += salad_fiber;
-}
+    Serial.println("SCANNED SALAD");
+    sodium += salad_sodium;
+    sugar += salad_sugar;
+    fiber += salad_fiber;
+  }
 
-if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x91 && mfrc522.uid.uidByte[2] == 0x24 && mfrc522.uid.uidByte[3] == 0xC7 && mfrc522.uid.uidByte[4] == 0x23
+  else if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x91 && mfrc522.uid.uidByte[2] == 0x24 && mfrc522.uid.uidByte[3] == 0xC7 && mfrc522.uid.uidByte[4] == 0x23
     && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Croissant
-  Serial.println("SCANNED CROISSANT");
-  sodium += croissant_sodium;
-  sugar += croissant_sugar;
-  fiber += croissant_fiber;
-}
+    Serial.println("SCANNED CROISSANT");
+    sodium += croissant_sodium;
+    sugar += croissant_sugar;
+    fiber += croissant_fiber;
+  }
 
-if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x81 && mfrc522.uid.uidByte[2] == 0x21 && mfrc522.uid.uidByte[3] == 0xC6 && mfrc522.uid.uidByte[4] == 0x23
+  else if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x81 && mfrc522.uid.uidByte[2] == 0x21 && mfrc522.uid.uidByte[3] == 0xC6 && mfrc522.uid.uidByte[4] == 0x23
     && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Apple
-  Serial.println("SCANNED APPLE");
-  sodium += apple_sodium;
-  sugar += apple_sugar;
-  fiber += apple_fiber;
-}
+    Serial.println("SCANNED APPLE");
+    sodium += apple_sodium;
+    sugar += apple_sugar;
+    fiber += apple_fiber;
+  }
 
-if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0xF3 && mfrc522.uid.uidByte[2] == 0x69 && mfrc522.uid.uidByte[3] == 0xE1 && mfrc522.uid.uidByte[4] == 0x20
+  else if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0xF3 && mfrc522.uid.uidByte[2] == 0x69 && mfrc522.uid.uidByte[3] == 0xE1 && mfrc522.uid.uidByte[4] == 0x20
     && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Chicken
-  Serial.println("SCANNED CHICKEN");
-  sodium += chicken_sodium;
-  sugar += chicken_sugar;
-  fiber += chicken_fiber;
-}
+    Serial.println("SCANNED CHICKEN");
+    sodium += chicken_sodium;
+    sugar += chicken_sugar;
+    fiber += chicken_fiber;
+  }
 
-if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x41 && mfrc522.uid.uidByte[2] == 0x32 && mfrc522.uid.uidByte[3] == 0xC4 && mfrc522.uid.uidByte[4] == 0x23
+  else if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x41 && mfrc522.uid.uidByte[2] == 0x32 && mfrc522.uid.uidByte[3] == 0xC4 && mfrc522.uid.uidByte[4] == 0x23
     && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Burger
-  Serial.println("SCANNED BURGER");
-  sodium += burger_sodium;
-  sugar += burger_sugar;
-  fiber += burger_fiber;
-}
+    Serial.println("SCANNED BURGER");
+    sodium += burger_sodium;
+    sugar += burger_sugar;
+    fiber += burger_fiber;
+  }
 
-if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x51 && mfrc522.uid.uidByte[2] == 0xD0 && mfrc522.uid.uidByte[3] == 0x7C && mfrc522.uid.uidByte[4] == 0x23
+  else if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x51 && mfrc522.uid.uidByte[2] == 0xD0 && mfrc522.uid.uidByte[3] == 0x7C && mfrc522.uid.uidByte[4] == 0x23
     && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Pizza
-  Serial.println("SCANNED PIZZA");
-  sodium += pizza_sodium;
-  sugar += pizza_sugar;
-  fiber += pizza_fiber;
-}
+    Serial.println("SCANNED PIZZA");
+    sodium += pizza_sodium;
+    sugar += pizza_sugar;
+    fiber += pizza_fiber;
+  }
 
-if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x63 && mfrc522.uid.uidByte[2] == 0xE5 && mfrc522.uid.uidByte[3] == 0xE1 && mfrc522.uid.uidByte[4] == 0x20
+  else if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x63 && mfrc522.uid.uidByte[2] == 0xE5 && mfrc522.uid.uidByte[3] == 0xE1 && mfrc522.uid.uidByte[4] == 0x20
     && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Ramen
-  Serial.println("SCANNED RAMEN");
-  sodium += ramen_sodium;
-  sugar += ramen_sugar;
-  fiber += ramen_fiber;
-}
+    Serial.println("SCANNED RAMEN");
+    sodium += ramen_sodium;
+    sugar += ramen_sugar;
+    fiber += ramen_fiber;
+  }
 
-if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x51 && mfrc522.uid.uidByte[2] == 0x48 && mfrc522.uid.uidByte[3] == 0x86 && mfrc522.uid.uidByte[4] == 0x23
+  else if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x51 && mfrc522.uid.uidByte[2] == 0x48 && mfrc522.uid.uidByte[3] == 0x86 && mfrc522.uid.uidByte[4] == 0x23
     && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Spaghetti
-  Serial.println("SCANNED SPAGHETTI");
-  sodium += spaghetti_sodium;
-  sugar += spaghetti_sugar;
-  fiber += spaghetti_fiber;
-}
+    Serial.println("SCANNED SPAGHETTI");
+    sodium += spaghetti_sodium;
+    sugar += spaghetti_sugar;
+    fiber += spaghetti_fiber;
+  }
 
-if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x51 && mfrc522.uid.uidByte[2] == 0x43 && mfrc522.uid.uidByte[3] == 0x81 && mfrc522.uid.uidByte[4] == 0x23
+  else if (mfrc522.uid.uidByte[0] == 0x04 && mfrc522.uid.uidByte[1] == 0x51 && mfrc522.uid.uidByte[2] == 0x43 && mfrc522.uid.uidByte[3] == 0x81 && mfrc522.uid.uidByte[4] == 0x23
     && mfrc522.uid.uidByte[5] == 0x02 && mfrc522.uid.uidByte[6] == 0x89) { // Bread
-  Serial.println("SCANNED BREAD");
-  sodium += bread_sodium;
-  sugar += bread_sugar;
-  fiber += bread_fiber;
-}
+    Serial.println("SCANNED BREAD");
+    sodium += bread_sodium;
+    sugar += bread_sugar;
+    fiber += bread_fiber;
+  }
 
+  updateNutritionLEDs();
+  updateLEDs();
 
-
+  flashScanIndicator();
 
   mfrc522.PICC_HaltA();  // Halt PICC
   mfrc522.PCD_StopCrypto1();  // Stop encryption on PCD
+}
+
+void updateNutritionLEDs() {
+  // Clear previous nutrition indicators
+  currentLED1 &= ~(0B00011111);  // Clear sugar bits (bits 0-4)
+  currentLED1 &= ~(0B11100000);  // Clear sodium bits (bits 5-7)
+  currentLED2 &= ~(0B00000011);  // Clear sodium bits (bits 0-1)
+  currentLED2 &= ~(0B01111100);  // Clear fiber bits (bits 2-6)
+
+  if (sugar < sl_sugar) currentLED1 |= 0B00000001;
+  else if (sugar < l_sugar) currentLED1 |= 0B00000010;
+  else if (sugar < rec_sugar) currentLED1 |= 0B00000100;
+  else if (sugar < h_sugar) currentLED1 |= 0B00001000;
+  else currentLED1 |= 0B00010000;
+
+  if (sodium < sl_sodium) currentLED1 |= 0B00100000;
+  else if (sodium < l_sodium) currentLED1 |= 0B01000000;
+  else if (sodium < rec_sodium) currentLED1 |= 0B10000000;
+  else if (sodium < h_sodium) currentLED2 |= 0B00000001;
+  else currentLED2 |= 0B00000010;
+
+  if (fiber < sl_fiber) currentLED2 |= 0B00000100;
+  else if (fiber < l_fiber) currentLED2 |= 0B00001000;
+  else if (fiber < rec_fiber) currentLED2 |= 0B00010000;
+  else if (fiber < h_fiber) currentLED2 |= 0B00100000;
+  else currentLED2 |= 0B01000000;
+
+}
+
+void updateLEDs() {
+  digitalWrite(LATCH_PIN1, LOW);
+  shiftOut(DATA_PIN1, CLOCK_PIN1, LSBFIRST, currentLED1);
+  digitalWrite(LATCH_PIN1, HIGH);
+
+  digitalWrite(LATCH_PIN2, LOW);
+  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, currentLED2);
+  digitalWrite(LATCH_PIN2, HIGH);
+}
+
+void flashScanIndicator() {
+  // Save current LED states
+  byte prevLED1 = currentLED1;
+  byte prevLED2 = currentLED2;
+
+  // Turn off all LEDs
+  currentLED1 = 0;
+  currentLED2 = 0;
+  updateLEDs();
+
+  // Flash the scan indicator LED (only bit 7 of shift register 2)
+  digitalWrite(LATCH_PIN2, LOW);
+  shiftOut(DATA_PIN2, CLOCK_PIN2, LSBFIRST, 0B10000000);
+  digitalWrite(LATCH_PIN2, HIGH);
+  delay(500);
+
+  // Restore previous LED states
+  currentLED1 = prevLED1;
+  currentLED2 = prevLED2;
+  updateLEDs();
 }
